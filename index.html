@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>汇率计算器 - 全球实时汇率换算查询</title>
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <!-- Google Fonts Inter & Noto Sans SC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <!-- Google AdSense Placeholder script (simulation) -->
+  <script>
+
+  </script>
+</head>
+
+<body>
+  <div class="background-decor">
+    <div class="circle circle-1"></div>
+    <div class="circle circle-2"></div>
+  </div>
+
+  <div class="app-layout">
+    <!-- Main Left Content -->
+    <main class="main-content">
+      <header class="app-header">
+        <div class="logo">
+          <span class="icon">
+            <img src="logo.png" alt="汇率计算器">
+          </span>
+          <div>
+            <h1>汇率计算器</h1>
+            <p class="subtitle">全球实时汇率智能换算系统</p>
+          </div>
+        </div>
+        <button id="theme-toggle" class="theme-toggle-btn" aria-label="切换主题">
+          <span class="light-icon">☀️</span>
+          <span class="dark-icon">🌙</span>
+        </button>
+      </header>
+
+      <!-- Google Ad Top Banner (728x90) -->
+      <div class="ad-container ad-banner-top">
+        <div class="ad-badge">赞助商广告 / Advertisement</div>
+        <div class="ad-placeholder-content">
+          <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px"
+            data-ad-client="ca-pub-mock-client" data-ad-slot="mock-slot-top"></ins>
+          <div class="ad-mock-text">Google Ads Slot (728x90 Banner)</div>
+        </div>
+      </div>
+
+      <!-- Converter Card -->
+      <div class="converter-card">
+        <!-- Input Section -->
+        <div class="converter-row">
+          <div class="converter-col">
+            <label for="amount-input">输入金额</label>
+            <div class="input-wrapper">
+              <input type="number" id="amount-input" value="100" min="0" placeholder="请输入金额" autocomplete="off">
+              <span class="input-currency-symbol" id="from-symbol">USD</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Currency Selectors with Swap Button -->
+        <div class="currency-selectors-wrapper">
+          <div class="selector-box" id="from-selector-box">
+            <span class="label">源货币</span>
+            <button class="selector-trigger" id="from-currency-btn">
+              <span class="flag" id="from-flag">🇺🇸</span>
+              <span class="code" id="from-code">USD</span>
+              <span class="name" id="from-name">美元</span>
+              <span class="chevron">▼</span>
+            </button>
+
+            <!-- Dropdown -->
+            <div class="currency-dropdown" id="from-dropdown">
+              <div class="search-box">
+                <input type="text" placeholder="输入国家名称、简称、区号(如+86)..." class="dropdown-search" id="from-search"
+                  autocomplete="off">
+              </div>
+              <ul class="currency-list" id="from-list">
+                <!-- JS dynamic render -->
+              </ul>
+            </div>
+          </div>
+
+          <button class="swap-button" id="swap-btn" aria-label="交换货币">
+            <span class="swap-icon">🔄</span>
+          </button>
+
+          <div class="selector-box" id="to-selector-box">
+            <span class="label">目标货币</span>
+            <button class="selector-trigger" id="to-currency-btn">
+              <span class="flag" id="to-flag">🇨🇳</span>
+              <span class="code" id="to-code">CNY</span>
+              <span class="name" id="to-name">人民币</span>
+              <span class="chevron">▼</span>
+            </button>
+
+            <!-- Dropdown -->
+            <div class="currency-dropdown" id="to-dropdown">
+              <div class="search-box">
+                <input type="text" placeholder="输入国家名称、简称、区号(如+86)..." class="dropdown-search" id="to-search"
+                  autocomplete="off">
+              </div>
+              <ul class="currency-list" id="to-list">
+                <!-- JS dynamic render -->
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="search-tip-text">💡 支持国家区号（如86）、国家名称、货币代码搜索，按回车直接选定</div>
+
+        <!-- Result Display -->
+        <div class="result-display">
+          <div class="formula">
+            <span id="formula-from">1 USD</span> = <span id="formula-to">-- CNY</span>
+          </div>
+          <div class="converted-amount" id="result-amount">--</div>
+          <div class="update-time" id="last-update">数据加载中...</div>
+        </div>
+
+        <!-- Quick Shortcuts -->
+        <div class="quick-shortcuts">
+          <button class="shortcut-btn" data-value="100">100</button>
+          <button class="shortcut-btn" data-value="1000">1,000</button>
+          <button class="shortcut-btn" data-value="5000">5,000</button>
+          <button class="shortcut-btn" data-value="10000">10,000</button>
+        </div>
+      </div>
+
+      <!-- Multi-currency Conversion Table -->
+      <div class="info-card conversion-table-card">
+        <h3>多国货币换算对照表</h3>
+        <p class="section-desc">当前输入的金额换算成其他主要国际货币的实时参考价</p>
+        <div class="table-responsive">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>国家/地区</th>
+                <th>货币代码</th>
+                <th>汇率</th>
+                <th>换算金额</th>
+              </tr>
+            </thead>
+            <tbody id="comparison-table-body">
+              <!-- JS dynamic render -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="info-card faq-card">
+        <h3>常见外汇问题科普 (FAQ)</h3>
+        <div class="faq-grid">
+          <div class="faq-item">
+            <h4>💡 汇率是实时更新的吗？</h4>
+            <p>本平台的汇率数据每10分钟自动更新一次，来源于中央银行及商业银行外汇报价，代表真实的国际市场中间价。</p>
+          </div>
+          <div class="faq-item">
+            <h4>💡 跨境汇款为什么和这里的汇率不同？</h4>
+            <p>本工具展示的是“国际市场中间价”。实际跨境汇款或换汇时，银行和支付机构会在此基础上加入换汇点差（手续费）或使用各自的现钞、现汇卖出价，因此结汇金额会有所差异。</p>
+          </div>
+          <div class="faq-item">
+            <h4>💡 搜索输入框支持哪些方式？</h4>
+            <p>你可以直接输入<b>国家中文名</b>（如“日本”）、<b>货币简称</b>（如“JPY”）、<b>英文名</b>，或是<b>国家地区电话区号</b>（如输入“86”或“+86”直接定位人民币）。</p>
+          </div>
+          <div class="faq-item">
+            <h4>💡 什么是基准货币与目标货币？</h4>
+            <p>基准货币（源货币）是您持有的初始资产货币，目标货币则是您希望兑换换算的目标币种。可以通过中间的“🔄”按钮一键倒置换算关系。</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Sidebar Right Content -->
+    <aside class="sidebar-content">
+      <!-- Popular Rates Widget -->
+      <div class="info-card">
+        <h3>常用汇率速览</h3>
+        <div class="quick-rates-grid" id="quick-rates">
+          <!-- JS dynamic render -->
+        </div>
+      </div>
+
+      <!-- Google Ad Sidebar Rectangle (300x250) -->
+      <div class="ad-container ad-sidebar-rect">
+        <div class="ad-badge">赞助商广告 / Advertisement</div>
+        <div class="ad-placeholder-content">
+          <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px"
+            data-ad-client="ca-pub-mock-client" data-ad-slot="mock-slot-sidebar"></ins>
+          <div class="ad-mock-text">Google Ads Slot (300x250 Medium Rectangle)</div>
+        </div>
+      </div>
+
+      <!-- Conversion History -->
+      <div class="info-card history-card">
+        <h3>计算历史记录</h3>
+        <p class="section-desc">您最近换算的记录（点击条目可快速还原换算）</p>
+        <ul class="history-list" id="history-list">
+          <li class="empty-history">暂无计算历史记录</li>
+        </ul>
+        <button id="clear-history-btn" class="clear-btn" style="display:none;">清空历史记录</button>
+      </div>
+
+      <!-- Bottom Ad (Flexible/Responsive link ad) -->
+      <div class="ad-container ad-sidebar-link">
+        <div class="ad-badge">赞助商广告</div>
+        <div class="ad-placeholder-content-link">
+          <a href="#" class="mock-link-ad">✈️ 全球低手续费跨境汇款优惠通道</a>
+          <a href="#" class="mock-link-ad">📈 实时查看全球股市与外汇大盘</a>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
